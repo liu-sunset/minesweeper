@@ -1,14 +1,16 @@
 #define  _CRT_SECURE_NO_WARNINGS
 #include "home.h"
-int row;
-int col;
-int rows;
-int cols;
-int bomb;
-extern  char musics[50][50];
-extern char stopmusics[50][50];
-extern int musicn;
-void menu()
+int row;//可视的行数量
+int col;//可视的列数量
+int rows;//不可视的行数量
+int cols;//不可视的列数量
+int bomb;//布置的炸弹的数量
+int max;//控制爆炸效果产生后最大出现非炸弹的数量
+int searchrange;//控制爆炸效果生效的范围
+extern  char musics[50][50];//播放音乐的字符串
+extern char stopmusics[50][50];//停止音乐的字符串
+extern int musicn;//当前正在播放的音乐序号
+void menu()//菜单提示
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
@@ -21,7 +23,7 @@ void menu()
 	printf("\t\t    ***********王者***********\n");
 	printf("******1:暮色回响**2:天若有情**3:如果可以**4:向阳生长**5:(一首钢琴曲)**6:记忆博物馆******\n");
 }
-void initialize(char arr[40][40], int h, int l, char mod)
+void initialize(char arr[40][40], int h, int l, char mod)//初始化二元数组
 {
 	int i, j;
 	for(i=0;i<h;i++)
@@ -30,7 +32,7 @@ void initialize(char arr[40][40], int h, int l, char mod)
 			arr[i][j] = mod;
 		}
 }
-void display(char arr[40][40], int h, int l)
+void display(char arr[40][40], int h, int l)//陈列数组
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
@@ -61,7 +63,7 @@ void display(char arr[40][40], int h, int l)
 	}	
 	printf("------------------------display------------------------\n");
 }
-void Layout(char arr[40][40])
+void Layout(char arr[40][40])//布置炸弹
 {
 	int count = bomb;
 	while(count)
@@ -76,7 +78,7 @@ void Layout(char arr[40][40])
 		}
 	}
 }
-char num(char arr[40][40], int x, int y)
+char num(char arr[40][40], int x, int y)//统计周围3*3范围炸弹的数量
 {
 	int n = 48;
 	int i, j;
@@ -93,7 +95,7 @@ char num(char arr[40][40], int x, int y)
 	
 }
 
-int outcome(char arr[40][40])
+int outcome(char arr[40][40])//统计现在局面上可能是炸弹的数量
 {
 	int n = 0;
 	int i, j;
@@ -105,26 +107,61 @@ int outcome(char arr[40][40])
 		}
 	return n;
 }
-void mark(char mail[40][40],int a,int b)
+void mark(char mail[40][40],int a,int b)//标记炸弹
 {
 	mail[a][b] = '&';
 }
 
-void clear_input_buffer() 
+void clear_input_buffer() //清空缓存区
 {
 	int c;
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void coordinate(char mine[40][40], char mail[40][40])
+
+void explode(char arr[40][40],char arr2[40][40], int a, int b)//实现爆炸
 {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	int bombcount = rand() % max + 3;
+	int timebombcount = 0;
+	for (int i = -2-searchrange; i <=2+searchrange ;i++)
+	{
+		if (a + i<1 || a + i>row)
+			continue;
+		for (int j = -2-searchrange; j <= 2+searchrange; j++)
+		{
+			if (b + j<1 || b + j>col)
+				continue;
+			if (i == 0 && j == 0)
+				continue;
+			else 
+			{
+				if (arr[a + i][b + j] == '*' && arr2[a + i][b + j] == '0')
+				{
+					int odds = rand() % 10 + 1;
+					if(odds<=6)
+					arr[a + i][b + j] = num(arr2, a + i, b + j);
+				}
+					
+				timebombcount++;
+				if (timebombcount == bombcount)
+					break;
+			}
+		}
+		if (timebombcount == bombcount)
+			break;
+	}
+}
+
+
+void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);//获得句柄
 	int end;//判断是要找炸弹还是标记炸弹
 	int come = 0;
 	int a, b;//拆雷坐标
 	int c, d;//标记坐标
-	int flagbomb = 0;
-	int flagwin = 0;
+	int flagbomb = 0;//判断是否要退出（拆雷，标记雷）的循坏
+	int flagwin = 0;//判断是否要退出（拆雷，标记雷）的循坏
 	while (1)
 	{
 		SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
@@ -170,6 +207,12 @@ void coordinate(char mine[40][40], char mail[40][40])
 						{
 							char time = num(mine, a, b);
 							mail[a][b] = time;
+							int possibility;
+							possibility = rand() % 10 + 1;
+							if (possibility <= 7)//有6成的概率会爆炸
+							{
+								explode(mail, mine, a, b);
+							}
 							display(mail, row, col);
 							come = outcome(mail);
 							if (come == bomb)
@@ -200,6 +243,9 @@ void coordinate(char mine[40][40], char mail[40][40])
 								flagwin = 1;
 								break;
 							}
+							else {
+								
+							}
 							break;
 						}
 						
@@ -228,14 +274,14 @@ void coordinate(char mine[40][40], char mail[40][40])
 			break;
 	}
 }
-void rules()
+void rules()//规则列表
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
 	printf("\t\t\t          \t\t    游戏规则\n\t\t\t\t本游戏不存在区域爆炸，踩雷即死（@是雷的标志 &是你标记的雷）");
 	printf("\n\t\t\t游戏结束最后的表格中0为非雷，1是布置的雷(其他的懒得称述自己看吧）\n\t\t\t\t\t\t你有6秒的时间阅读\n");
 }
-void level()
+void level()//难度选择
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	while (1)
@@ -249,6 +295,9 @@ void level()
 			row = 9; col = 9;
 			rows = row + 2; cols = col + 2;
 			bomb = 24;
+			max = 6;
+			searchrange = 1;
+
 			break;
 		}
 		else if (strcmp(liu, "星耀") == 0)
@@ -256,6 +305,8 @@ void level()
 			row = 16; col = 16;
 			rows = row + 2; cols = col + 2;
 			bomb = 45;
+			max = 12;
+			searchrange = 2;
 			break;
 		}
 		else if (strcmp(liu, "王者") == 0)
@@ -263,6 +314,8 @@ void level()
 			row = 16; col = 30;
 			rows = row + 2; cols = col + 2;
 			bomb = 120;
+			max = 15;
+			searchrange = 3;
 			break;
 		}
 		else if (strcmp(liu, "青铜") == 0)
@@ -270,6 +323,8 @@ void level()
 			row = 5; col = 5;
 			rows = row + 2; cols = col + 2;
 			bomb = 7;
+			max = 10;
+			searchrange = 0;
 			break;
 		}
 		else
@@ -286,7 +341,7 @@ void game()
 {
 	mciSendStringA(musics[musicn-1], 0, 0, 0);
 	rules();
-	Sleep(6000);
+	Sleep(2500);
 	level();
 	char mine[40][40] = { '0' };
 	char mail[40][40] = { '*' };
