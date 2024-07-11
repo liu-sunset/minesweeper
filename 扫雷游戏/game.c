@@ -7,6 +7,7 @@ int cols;//不可视的列数量
 int bomb;//布置的炸弹的数量
 int max;//控制爆炸效果产生后最大出现非炸弹的数量
 int searchrange;//控制爆炸效果生效的范围
+int serialnumber;//控制棋盘的分布
 extern  char musics[50][50];//播放音乐的字符串
 extern char stopmusics[50][50];//停止音乐的字符串
 extern int musicn;//当前正在播放的音乐序号
@@ -21,7 +22,7 @@ void menu()//菜单提示
 	printf("\t\t\t\t\t    ***********黄金***********\n");
 	printf("\t\t\t\t\t    ***********星耀***********\n");
 	printf("\t\t\t\t\t    ***********王者***********\n");
-	printf("\t\t******1:暮色回响**2:天若有情**3:如果可以**4:向阳生长**5:(一首钢琴曲)**6:记忆博物馆******\n");
+	printf("\t\t******1:盲盒**2:盲盒**3:盲盒**4:向阳生长**5:(一首钢琴曲)**6:记忆博物馆******\n");
 }
 void initialize(char arr[40][40], int h, int l, char mod)//初始化二元数组
 {
@@ -32,14 +33,18 @@ void initialize(char arr[40][40], int h, int l, char mod)//初始化二元数组
 			arr[i][j] = mod;
 		}
 }
+
+
 void display(char arr[40][40], int h, int l)//陈列数组
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
 	printf("\t--------------------------------------------------------display------------------------------------------------\n");
-	int i, j;
+	int i, j, m;
 	printf("   ");
-	printf("\t\t");
+	for (i = 0; i < serialnumber; i++)
+		printf("\t");
+	printf("   ");
 	for (i = 1; i <= l; i++)
 	{
 		printf("%d", i);
@@ -52,7 +57,9 @@ void display(char arr[40][40], int h, int l)//陈列数组
 	for (i = 1; i <= h; i++)
 	{
 		SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
-		printf("\t\t%d", i);
+		for (m = 0; m < serialnumber; m++)
+			printf("\t");
+		printf("%d", i);
 		if (i < 10)
 			printf("  ");
 		else
@@ -72,10 +79,11 @@ void display(char arr[40][40], int h, int l)//陈列数组
 
 		}
 		printf("\n");
-	}	
+	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
 	printf("\t--------------------------------------------------------display------------------------------------------------\n");
 }
+
 void Layout(char arr[40][40])//布置炸弹
 {
 	int count = bomb;
@@ -283,7 +291,7 @@ void level()//难度选择
 			bomb = 24;
 			max = 6;
 			searchrange = 1;
-
+			serialnumber = 6;
 			break;
 		}
 		else if (strcmp(liu, "星耀") == 0)
@@ -293,6 +301,7 @@ void level()//难度选择
 			bomb = 45;
 			max = 12;
 			searchrange = 2;
+			serialnumber = 5;
 			break;
 		}
 		else if (strcmp(liu, "王者") == 0)
@@ -302,6 +311,7 @@ void level()//难度选择
 			bomb = 120;
 			max = 15;
 			searchrange = 3;
+			serialnumber = 2;
 			break;
 		}
 		else if (strcmp(liu, "青铜") == 0)
@@ -311,6 +321,7 @@ void level()//难度选择
 			bomb = 7;
 			max = 10;
 			searchrange = 0;
+			serialnumber = 7;
 			break;
 		}
 		else
