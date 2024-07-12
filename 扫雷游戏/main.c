@@ -6,6 +6,51 @@ int musicn;
 int main()
 {
 	
+	char version[10];
+	do
+	{
+		printf("\t\t\t\t\t请选择使用版本->(1.青年版本，2.老年版本)");
+		scanf("%s", version);
+		if (strcmp(version, "老年版本") == 0)
+		{
+			HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+			// 定义控制台字体信息结构体
+			CONSOLE_FONT_INFOEX font;
+			font.cbSize = sizeof(font);
+
+			// 获取当前控制台字体信息
+			GetCurrentConsoleFontEx(consoleHandle, FALSE, &font);
+
+			// 设置字体大小为20
+			font.dwFontSize.X = 25;
+			font.dwFontSize.Y = 25;
+
+			// 应用新的字体信息
+			SetCurrentConsoleFontEx(consoleHandle, FALSE, &font);
+			break;
+		}
+		else if (strcmp(version, "青年版本") == 0)
+		{
+			HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+			// 定义控制台字体信息结构体
+			CONSOLE_FONT_INFOEX font;
+			font.cbSize = sizeof(font);
+
+			// 获取当前控制台字体信息
+			GetCurrentConsoleFontEx(consoleHandle, FALSE, &font);
+
+			// 设置字体大小为20
+			font.dwFontSize.X = 20;
+			font.dwFontSize.Y = 20;
+
+			// 应用新的字体信息
+			SetCurrentConsoleFontEx(consoleHandle, FALSE, &font);
+			break;
+		}
+	}while (1);
+	
 	for (int i = 0; i < 6; i++)
 	{
 		sprintf(musics[i], "play back%d.mp3 repeat", i + 1);

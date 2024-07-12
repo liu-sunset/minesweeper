@@ -15,13 +15,13 @@ void menu()//菜单提示
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE);
-	printf("\t\t\t\t\t    *******   1:开始  ********\n");
-	printf("\t\t\t\t\t    *******   0:退出  ********\n");
-	printf("\t\t\t\t\t    *******  -1:清屏  ********\n");
-	printf("\t\t\t\t\t    ***********青铜***********\n");
-	printf("\t\t\t\t\t    ***********黄金***********\n");
-	printf("\t\t\t\t\t    ***********星耀***********\n");
-	printf("\t\t\t\t\t    ***********王者***********\n");
+	printf("\t\t\t\t\t\t    *******   1:开始  ********\n");
+	printf("\t\t\t\t\t\t    *******   0:退出  ********\n");
+	printf("\t\t\t\t\t\t    *******  -1:清屏  ********\n");
+	printf("\t\t\t\t\t\t    ***********青铜***********\n");
+	printf("\t\t\t\t\t\t    ***********黄金***********\n");
+	printf("\t\t\t\t\t\t    ***********星耀***********\n");
+	printf("\t\t\t\t\t\t    ***********王者***********\n");
 	printf("\t\t******1:盲盒**2:盲盒**3:盲盒**4:向阳生长**5:(一首钢琴曲)**6:记忆博物馆******\n");
 }
 void initialize(char arr[40][40], int h, int l, char mod)//初始化二元数组
@@ -194,7 +194,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 				if (a > row || a <0 || b > col || b <0||(a==0&&b!=0)||(b==0&&a!=0))
 				{
 					SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-					printf("\t\t\t  坐标不合法！\n\a");
+					printf("\t\t\t\t\t\t\t  坐标不合法！\n\a");
 				}
 				else if (a == 0 && b == 0)
 				{
@@ -209,7 +209,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 					if (mail[a][b] != '*'&&mail[a][b]!='&')
 					{
 						SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-						printf("\n\n\t\t\t该坐标已经排查过了！请重新选择！\a\n\n");
+						printf("\n\n\t\t\t\t\t\t\t该坐标已经排查过了！请重新选择！\a\n\n");
 					}
 					else
 					{
@@ -217,7 +217,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 						{
 							mail[a][b] = '@';
 							SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-							printf("\n\t\t\tgame over!踩雷了！\n");
+							printf("\n\t\t\t\t\t\t\tgame over!踩雷了！\n");
 							display(mail, row, col);
 							printf("\n\n");
 							display(mine, row, col);
@@ -229,7 +229,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 							mail[a][b] = time;
 							int possibility;
 							possibility = rand() % 10 + 1;
-							if (possibility <= 7)//有6成的概率会爆炸
+							if (possibility <= 8)//有8成的概率会爆炸
 							{
 								explode(mail, mine, a, b);
 							}
@@ -243,6 +243,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 								mciSendStringA("play vectory.mp3 wait", 0, 0, 0);
 								for (y = 1.5f; y > -1; y -= 0.1f)
 								{
+									printf("\t\t\t\t");
 									for (x = -1.5f; x < 1.5f; x += 0.05f)
 									{
 										a = x * x + y * y - 1;
@@ -259,7 +260,7 @@ void coordinate(char mine[40][40], char mail[40][40])//坐标输入以及检测
 									printf("\n");
 								}
 
-								printf("\t\t\t  恭喜胜利！\n\n\n");
+								printf("\t\t\t\t\t\t\t  恭喜胜利！\n\n\n");
 								break;
 							}
 						}
@@ -272,8 +273,8 @@ void rules()//规则列表
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	printf("\t\t\t          \t\t    游戏规则\n\t\t\t\t\t     @是雷的标志 &是你标记的雷");
-	printf("\n\t\t\t\t    游戏结束最后的表格中0为非雷，1是布置的雷\n\t\t\t\t\t\t你有2秒的时间阅读\n");
+	printf("\t\t\t          \t\t\t    游戏规则\n\t\t\t\t\t\t     @是雷的标志 &是你标记的雷");
+	printf("\n\t\t\t\t\t    游戏结束最后的表格中0为非雷，1是布置的雷\n\t\t\t\t\t\t\t你有2秒的时间阅读\n");
 }
 void level()//难度选择
 {
@@ -318,7 +319,7 @@ void level()//难度选择
 		{
 			row = 5; col = 5;
 			rows = row + 2; cols = col + 2;
-			bomb = 7;
+			bomb = 8;
 			max = 10;
 			searchrange = 0;
 			serialnumber = 7;
